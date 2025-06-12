@@ -1,34 +1,32 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace SkalProj_Datastrukturer_Minne
 {
     class Program
     {
-        /// <summary>
-        /// The main method, vill handle the menues for the program
-        /// </summary>
-        /// <param name="args"></param>
         static void Main()
         {
-
             while (true)
             {
                 Console.WriteLine("Please navigate through the menu by inputting the number \n(1, 2, 3 ,4, 0) of your choice"
                     + "\n1. Examine a List"
                     + "\n2. Examine a Queue"
-                    + "\n3. Examine a Stack"
+                    + "\n3. Examine a Stack (with ReverseText)"
                     + "\n4. CheckParenthesis"
                     + "\n0. Exit the application");
-                char input = ' '; //Creates the character input to be used with the switch-case below.
+
+                char input = ' ';
                 try
                 {
-                    input = Console.ReadLine()![0]; //Tries to set input to the first char in an input line
+                    input = Console.ReadLine()![0];
                 }
-                catch (IndexOutOfRangeException) //If the input line is empty, we ask the users for some input.
+                catch (IndexOutOfRangeException)
                 {
                     Console.Clear();
                     Console.WriteLine("Please enter some input!");
                 }
+
                 switch (input)
                 {
                     case '1':
@@ -43,77 +41,217 @@ namespace SkalProj_Datastrukturer_Minne
                     case '4':
                         CheckParanthesis();
                         break;
-                    /*
-                     * Extend the menu to include the recursive 
-                     * and iterative exercises.
-                     */
                     case '0':
                         Environment.Exit(0);
                         break;
                     default:
-                        Console.WriteLine("Please enter some valid input (0, 1, 2, 3, 4)");
+                        Console.WriteLine("Please enter a valid input (0, 1, 2, 3, 4)");
                         break;
                 }
             }
         }
 
-        /// <summary>
-        /// Examines the datastructure List
-        /// </summary>
         static void ExamineList()
         {
-            /*
-             * Loop this method untill the user inputs something to exit to main menue.
-             * Create a switch statement with cases '+' and '-'
-             * '+': Add the rest of the input to the list (The user could write +Adam and "Adam" would be added to the list)
-             * '-': Remove the rest of the input from the list (The user could write -Adam and "Adam" would be removed from the list)
-             * In both cases, look at the count and capacity of the list
-             * As a default case, tell them to use only + or -
-             * Below you can see some inspirational code to begin working.
-            */
+            List<string> list = new List<string>();
 
-            //List<string> theList = new List<string>();
-            //string input = Console.ReadLine();
-            //char nav = input[0];
-            //string value = input.substring(1);
+            while (true)
+            {
+                Console.WriteLine("\nSkriv +namn för att lägga till, -namn för att ta bort, eller 0 för att gå tillbaka:");
+                string input = Console.ReadLine();
 
-            //switch(nav){...}
+                if (input == "0") break;
+                if (string.IsNullOrWhiteSpace(input)) continue;
+
+                char nav = input[0];
+                string value = input.Substring(1);
+
+                switch (nav)
+                {
+                    case '+':
+                        list.Add(value);
+                        Console.WriteLine($"{value} lades till.");
+                        break;
+                    case '-':
+                        if (list.Remove(value))
+                            Console.WriteLine($"{value} togs bort.");
+                        else
+                            Console.WriteLine($"{value} fanns inte i listan.");
+                        break;
+                    default:
+                        Console.WriteLine("Använd + eller - följt av ett namn.");
+                        break;
+                }
+
+                Console.WriteLine($"Antal element (Count): {list.Count}, Kapacitet (Capacity): {list.Capacity}");
+
+                /*
+                Fråga 2: När list.Count === list.Capacity.
+                Fråga 3: Den fördubblas.
+                Fråga 4: För att undvika skapande av ny array vid varje tillägg av element.
+                Fråga 5: Nej, capacity minskar inte automatiskt vid borttagning utan håller kvar storleken ifall element tillkommer.
+                Fråga 6: Använd array när du vet hur många element du ska jobba med.
+                */
+            }
         }
 
-        /// <summary>
-        /// Examines the datastructure Queue
-        /// </summary>
         static void ExamineQueue()
         {
-            /*
-             * Loop this method untill the user inputs something to exit to main menue.
-             * Create a switch with cases to enqueue items or dequeue items
-             * Make sure to look at the queue after Enqueueing and Dequeueing to see how it behaves
-            */
+            Queue<string> queue = new Queue<string>();
+
+            while (true)
+            {
+                Console.WriteLine("\nSkriv +namn för att ställa någon i kön, - för att expediera, eller 0 för att gå tillbaka:");
+                string input = Console.ReadLine();
+
+                if (input == "0") break;
+                if (string.IsNullOrWhiteSpace(input)) continue;
+
+                char nav = input[0];
+                string value = input.Length > 1 ? input.Substring(1) : "";
+
+                switch (nav)
+                {
+                    case '+':
+                        queue.Enqueue(value);
+                        Console.WriteLine($"{value} ställde sig i kön.");
+                        break;
+                    case '-':
+                        if (queue.Count > 0)
+                        {
+                            string removed = queue.Dequeue();
+                            Console.WriteLine($"{removed} fick hjälp och lämnade kön.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Kön är tom.");
+                        }
+                        break;
+                    default:
+                        Console.WriteLine("Använd +namn, - eller 0.");
+                        break;
+                }
+
+                Console.WriteLine("Kön nu:");
+                foreach (var person in queue)
+                {
+                    Console.WriteLine($" - {person}");
+                }
+            }
         }
 
-        /// <summary>
-        /// Examines the datastructure Stack
-        /// </summary>
         static void ExamineStack()
         {
-            /*
-             * Loop this method until the user inputs something to exit to main menue.
-             * Create a switch with cases to push or pop items
-             * Make sure to look at the stack after pushing and and poping to see how it behaves
-            */
+            Stack<string> stack = new Stack<string>();
+
+            while (true)
+            {
+                Console.WriteLine("\nSkriv +namn för att lägga någon överst i stacken, - för att ta bort översta,");
+                Console.WriteLine("reverse för att vända en text, eller 0 för att gå tillbaka:");
+                string input = Console.ReadLine();
+
+                if (input == "0") break;
+                if (string.IsNullOrWhiteSpace(input)) continue;
+                if (input == "reverse")
+                {
+                    ReverseText();
+                    continue;
+                }
+
+                char nav = input[0];
+                string value = input.Length > 1 ? input.Substring(1) : "";
+
+                switch (nav)
+                {
+                    case '+':
+                        stack.Push(value);
+                        Console.WriteLine($"{value} lades till överst i stacken.");
+                        break;
+                    case '-':
+                        if (stack.Count > 0)
+                        {
+                            string removed = stack.Pop();
+                            Console.WriteLine($"{removed} togs bort från toppen av stacken.");
+                        }
+                        else
+                        {
+                            Console.WriteLine("Stacken är tom.");
+                        }
+                        break;
+                    default:
+                        Console.WriteLine("Använd +namn, - eller reverse.");
+                        break;
+                }
+
+                Console.WriteLine("Stackens innehåll (överst först):");
+                foreach (var person in stack)
+                {
+                    Console.WriteLine($" - {person}");
+                }
+
+                
+                //En kö ska funka enligt FIFO, en stack funkar enligt FILO
+               
+                
+            }
+        }
+
+        static void ReverseText()
+        {
+            Console.Write("\nSkriv en text du vill reversa: ");
+            string input = Console.ReadLine();
+            Stack<char> stack = new Stack<char>();
+
+            foreach (char c in input)
+            {
+                stack.Push(c);
+            }
+
+            Console.Write("Reversad text: ");
+            while (stack.Count > 0)
+            {
+                Console.Write(stack.Pop());
+            }
+
+            Console.WriteLine();
         }
 
         static void CheckParanthesis()
         {
-            /*
-             * Use this method to check if the paranthesis in a string is Correct or incorrect.
-             * Example of correct: (()), {}, [({})],  List<int> list = new List<int>() { 1, 2, 3, 4 };
-             * Example of incorrect: (()]), [), {[()}],  List<int> list = new List<int>() { 1, 2, 3, 4 );
-             */
+            Console.Write("\nSkriv en sträng att kontrollera: ");
+            string input = Console.ReadLine();
+            Stack<char> stack = new Stack<char>();
+            Dictionary<char, char> matching = new Dictionary<char, char>
+            {
+                { ')', '(' },
+                { ']', '[' },
+                { '}', '{' }
+            };
 
+            foreach (char c in input)
+            {
+                if (matching.ContainsValue(c))
+                {
+                    stack.Push(c);
+                }
+                else if (matching.ContainsKey(c))
+                {
+                    if (stack.Count == 0 || stack.Pop() != matching[c])
+                    {
+                        Console.WriteLine("Ogiltig parentesstruktur!");
+                        return;
+                    }
+                }
+            }
+
+            if (stack.Count == 0)
+            {
+                Console.WriteLine("Strängen är giltig.");
+            }
+            else
+            {
+                Console.WriteLine("Strängen är inte giltig. saknar avslutande parenteser!");
+            }
         }
-
     }
 }
-
